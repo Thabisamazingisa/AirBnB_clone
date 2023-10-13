@@ -11,8 +11,10 @@ class BaseModel():
     def __init__(self, **kwargs):
         ''' base model constructor for the class '''
         if kwargs:
-            kwargs['created_at'] = dat.strptime(kwargs['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
-            kwargs['updated_at'] = dat.strptime(kwargs['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
+            kwargs['created_at'] = dat.strptime(kwargs['created_at'],
+                                                '%Y-%m-%dT%H:%M:%S.%f')
+            kwargs['updated_at'] = dat.strptime(kwargs['updated_at'],
+                                                '%Y-%m-%dT%H:%M:%S.%f')
 
             for key, value in kwargs.items():
                 if key != '__class__':
@@ -25,7 +27,8 @@ class BaseModel():
 
     def __str__(self):
         ''' returns a string representation of the object '''
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+        return "[{}] ({}) {}".format(self.__class__.__name__,
+                                     self.id, self.__dict__)
 
     def save(self):
         ''' updates the object in the storage '''
@@ -39,5 +42,3 @@ class BaseModel():
         new_dict['updated_at'] = self.new_dict['updated_at'].isoformat()
         new_dict['__class__'] = self.__class__.__name__
         return new_dict
-
-    
