@@ -28,7 +28,7 @@ class HBNBCommand(cmd.Cmd):
             print("*** Class doesn't exist***")
         else:
             new_creation = eval(args[0]+'()')
-            mod.storage.save()
+            mod.sto.save()
             print(new_creation.id)
 
     def do_show(self, args):
@@ -40,7 +40,7 @@ class HBNBCommand(cmd.Cmd):
         elif len(str) == 1:
             print("*** missing instance id ***")
         else:
-            obj = mod.storage.all()
+            obj = mod.sto.all()
             key_value = str[0] + '.' + str[1]
             if key_value in obj:
                 print(obj[key_value])
@@ -49,7 +49,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, args):
         args = args.split()
-        obj = mod.storage.all()
+        obj = mod.sto.all()
 
         if len(args) == 0:
             print('*** class name missing ***')
@@ -66,7 +66,7 @@ class HBNBCommand(cmd.Cmd):
                 print('*** no instance found ***')
     def do_all(self, args):
         args = args.split()
-        obj = mod.storage.all()
+        obj = mod.sto.all()
         new_list = []
 
         if len(args) == 0:
@@ -82,26 +82,65 @@ class HBNBCommand(cmd.Cmd):
             print(new_list)
 
     def do_update(self, args):
-        objects = mod.storage.all()
+        obj = mod.sto.all()
         args = args.split(" ")
 
         if len(args) == 0:
-            print("** class name missing **")
+            print("*** class name missing ***")
         elif args[0] not in HBNBCommand.__classes:
-            print("** class doesn't exist **")
+            print("***- class doesn't exist ***")
         elif len(args) == 1:
-            print("** instance id missing **")
+            print("*** instance id missing ***")
         elif len(args) == 2:
-            print("** attribute name missing **")
+            print("*** attribute name missing ***")
         elif len(args) == 3:
-            print("** value missing **")
+            print("*** value missing ***")
         else:
             key_find = args[0] + '.' + args[1]
-            obj = objects.get(key_find, None)
+            obj = obj.get(key_find, None)
 
             if not obj:
-                print("** no instance found **")
+                print("*** no instance found ***")
                 return
 
             setattr(obj, args[2], args[3].lstrip('"').rstrip('"'))
             mod.storage.save()
+    def check_class_name(self, name=""):
+        ''' Check class name exists in the storage '''
+        if len(name) == 0:
+            print("*** class name missing ***")
+            return False
+        else:
+            return True
+
+    def check_class_id(self, name=""):
+        ''' Check if class id exists in the storage '''
+        if len(name.split(' ')) == 1:
+            print("*** instance id missing ***")
+            return False
+        else:
+            return True
+
+    def found_class_name(self, name=""):
+        ''' Check if class name exists in the storage '''
+        if self.check_class_name(name):
+            args = shl.split(name)
+            if args[0] in HBNBCommand.__classes:
+                if self.check_class_id(name):
+                    key = args[0] + '.' + args[1]
+                    return key
+                else:
+                    print("*** class doesn't exist ***")
+                    return None
+
+    def do_quit(self, args):
+        '''  '''
+        return True
+
+    def do_EOF(self, args):
+        '''  '''
+        return True
+
+    def empty_line(self):
+        ''' Handles empty line '''
+        pass
