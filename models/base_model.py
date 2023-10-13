@@ -31,7 +31,7 @@ class BaseModel():
                                      self.id, self.__dict__)
 
     def save(self):
-        ''' updates the object in the storage '''
+        ''' updates the object in the engine '''
         self.updated_at = dat.now()
         mod.storage.save()
 

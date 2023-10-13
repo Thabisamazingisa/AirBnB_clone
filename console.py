@@ -5,7 +5,7 @@ import shlex as shl
 import models as mod
 from datetime import datetime as dat
 from models.base_model import BaseModel as bsm
-from models import storage as sto
+from models import engine as sto
 from models.user import User as us
 from models.state import State as st
 from models.city import City as ct
@@ -106,7 +106,7 @@ class HBNBCommand(cmd.Cmd):
             setattr(obj, args[2], args[3].lstrip('"').rstrip('"'))
             mod.storage.save()
     def check_class_name(self, name=""):
-        ''' Check class name exists in the storage '''
+        ''' Check class name exists in the engine '''
         if len(name) == 0:
             print("*** class name missing ***")
             return False
@@ -114,7 +114,7 @@ class HBNBCommand(cmd.Cmd):
             return True
 
     def check_class_id(self, name=""):
-        ''' Check if class id exists in the storage '''
+        ''' Check if class id exists in the engine '''
         if len(name.split(' ')) == 1:
             print("*** instance id missing ***")
             return False
@@ -122,7 +122,7 @@ class HBNBCommand(cmd.Cmd):
             return True
 
     def found_class_name(self, name=""):
-        ''' Check if class name exists in the storage '''
+        ''' Check if class name exists in the engine '''
         if self.check_class_name(name):
             args = shl.split(name)
             if args[0] in HBNBCommand.__classes:
