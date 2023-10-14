@@ -1,44 +1,39 @@
-#!/user/bin/python3
-'''This is the base models '''
+#!/usr/bin/python3
 
-import uuid as uid
-from datetime import datetime as dat
-import models as mod
+import uuid
+from datetime import datetime
+from models.engine.file_storage import Storage
+
+storage = Storage()
+storage.reload()
 
 
-class BaseModel():
-    '''Base model class'''
-    def __init__(self, **kwargs):
-        ''' base model constructor for the class '''
+class BaseModel:
+    def __init__(self, *args, **kwargs):
         if kwargs:
-            kwargs['created_at'] = dat.strptime(kwargs['created_at'],
-                                                '%Y-%m-%dT%H:%M:%S.%f')
-            kwargs['updated_at'] = dat.strptime(kwargs['updated_at'],
-                                                '%Y-%m-%dT%H:%M:%S.%f')
-
             for key, value in kwargs.items():
                 if key != '__class__':
+                    if key in ['created_at', 'updated_at']:
+                        value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
                     setattr(self, key, value)
-        else:
-            self.id = str(uid.uuid4())
-            self.created_at = dat.now()
-            self.updated_at = dat.now()
-            mod.storage.new(self)
-
-    def __str__(self):
-        ''' returns a string representation of the object '''
-        return "[{}] ({}) {}".format(self.__class__.__name__,
-                                     self.id, self.__dict__)
+        if 'id' not in kwargs:
+            self.id = str(uuid.uuid4())
+        if 'created_at' not in kwargs:
+            self.created_at = self.updated_at = datetime.now()
+        storage.new(self)
 
     def save(self):
-        ''' updates the object in the engine '''
-        self.updated_at = dat.now()
-        mod.storage.save()
+        storage.new(self)
+        storage.save()
 
     def to_dict(self):
-        ''' returns the dictionary representation of the object '''
-        new_dict = dict(self.__dict__)
-        new_dict['created_at'] = self.new_dict['created_at'].isoformat()
-        new_dict['updated_at'] = self.new_dict['updated_at'].isoformat()
-        new_dict['__class__'] = self.__class__.__name__
-        return new_dict
+        class_name = self.__class__.__name__
+        instance_dict = self.__dict__.copy()
+        instance_dict['created_at'] = self.created_at.isoformat()
+        instance_dict['updated_at'] = self.updated_at.isoformat()
+        instance_dict['__class__'] = class_name
+        return instance_dict
+
+    def __str__(self):
+        return "[{}] ({}) {}".format(self.__class__.__name__,
+                                     self.id, self.__dict__)
