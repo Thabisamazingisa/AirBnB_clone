@@ -4,6 +4,7 @@ import cmd
 from models.base_model import BaseModel
 from models import storage
 
+
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
@@ -99,6 +100,7 @@ class HBNBCommand(cmd.Cmd):
                 instance.save()
             else:
                 print("** no instance found **")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
