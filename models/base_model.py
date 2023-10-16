@@ -2,7 +2,10 @@
 
 import uuid
 from datetime import datetime
-import models
+from models.engine.file_storage import Storage
+
+storage = Storage()
+storage.reload()
 
 
 class BaseModel:
