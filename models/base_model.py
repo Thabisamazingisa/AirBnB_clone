@@ -4,9 +4,6 @@ import uuid
 from datetime import datetime
 import models
 
-storage = Storage()
-storage.reload()
-
 
 class BaseModel:
     def __init__(self, *args, **kwargs):
